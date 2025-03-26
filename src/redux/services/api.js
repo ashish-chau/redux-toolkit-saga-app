@@ -8,7 +8,7 @@ export const api = axios.create({
 
 export const getPost = async () => {
   try {
-    const response = await api.get("/products"); // ✅ Correct API call
+    const response = await api.get("/products?limit=150"); // ✅ Correct API call
     console.log("API Response:", response);
     return response.data;
   } catch (error) {
