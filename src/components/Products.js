@@ -12,6 +12,7 @@ import {
   Pagination,
   Snackbar,
   Alert,
+  CircularProgress
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -29,11 +30,21 @@ function Products({
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [loading, setLoading] = useState(true); // ✅ Loader state
+
   const productsPerPage = 6; // Display 6 products per page
 
   useEffect(() => {
+    setLoading(true); // ✅ Show loader before fetching
+
     getPost();
   }, [getPost]);
+
+  useEffect(() => {
+    if (products?.isSuccess) {
+      setLoading(false); // ✅ Hide loader when API response is successful
+    }
+  }, [products]);
 
   useEffect(() => {
     if (products?.data?.products) {
@@ -92,73 +103,81 @@ function Products({
       <Typography variant="h4" gutterBottom align="center">
         Product List
       </Typography>
-      {displayedProducts.map((product) => (
-        <div
-          key={product.id}
-          onClick={() => handleOpenModal(product)}
-          style={{
-            border: "1px solid #ddd",
-            borderRadius: "10px",
-            padding: "10px",
-            margin: "15px",
-            textAlign: "center",
-            width: "220px",
-            display: "inline-block",
-            boxShadow: "2px 2px 10px rgba(0,0,0,0.1)",
-            backgroundColor: "white",
-            cursor: "pointer",
-          }}
-        >
-          <div
-            style={{
-              width: "100%",
-              height: "200px",
-              overflow: "hidden",
-              borderTopLeftRadius: "10px",
-              borderTopRightRadius: "10px",
-            }}
-          >
-            <img
-              src={product.image}
-              alt={product.title}
-              width="100%"
-              height="100%"
-              style={{ objectFit: "cover" }}
-            />
-          </div>
 
-          <div
-            style={{
-              padding: "10px",
-              backgroundColor: "#f9f9f9",
-              borderBottomLeftRadius: "10px",
-              borderBottomRightRadius: "10px",
-            }}
-          >
-            <h3
+      {/* ✅ Loader Handling */}
+      {loading ? (
+        <CircularProgress sx={{ display: "block", margin: "auto" }} />
+      ) : (
+        <>
+          {displayedProducts.map((product) => (
+            <div
+              key={product.id}
+              onClick={() => handleOpenModal(product)}
               style={{
-                fontSize: "14px",
-                margin: "8px 0",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                padding: "10px",
+                margin: "15px",
+                textAlign: "center",
+                width: "220px",
+                display: "inline-block",
+                boxShadow: "2px 2px 10px rgba(0,0,0,0.1)",
+                backgroundColor: "white",
+                cursor: "pointer",
               }}
             >
-              {product.title}
-            </h3>
+              <div
+                style={{
+                  width: "100%",
+                  height: "200px",
+                  overflow: "hidden",
+                  borderTopLeftRadius: "10px",
+                  borderTopRightRadius: "10px",
+                }}
+              >
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  width="100%"
+                  height="100%"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
 
-            <p style={{ fontSize: "14px", color: "#555", margin: "5px 0" }}>
-              Price: <b>${product.price}</b>
-            </p>
+              <div
+                style={{
+                  padding: "10px",
+                  backgroundColor: "#f9f9f9",
+                  borderBottomLeftRadius: "10px",
+                  borderBottomRightRadius: "10px",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: "14px",
+                    margin: "8px 0",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {product.title}
+                </h3>
 
-            <p style={{ fontSize: "14px", color: "#555", margin: "5px 0" }}>
-              Discount: <b>{product.discount}%</b>
-            </p>
-          </div>
-        </div>
-      ))}
+                <p style={{ fontSize: "14px", color: "#555", margin: "5px 0" }}>
+                  Price: <b>${product.price}</b>
+                </p>
 
-      {/* ✅ Pagination - Only Show When "All Products" is Selected */}
+                <p style={{ fontSize: "14px", color: "#555", margin: "5px 0" }}>
+                  Discount: <b>{product.discount}%</b>
+                </p>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+
+      {/* ✅ Pagination */}
       {selectedCategory === "All" && (
         <Pagination
           count={Math.ceil(filteredProducts.length / productsPerPage)}
@@ -182,7 +201,7 @@ function Products({
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: "80%",
-            maxWidth: "800px",
+            maxWidth: "1000px",
             bgcolor: "white",
             boxShadow: 24,
             borderRadius: "10px",
@@ -192,7 +211,7 @@ function Products({
           }}
         >
           {/* ✅ Left Side - Product Image */}
-          <Box sx={{ width: "40%", padding: 2, backgroundColor: "#f9f9f9" }}>
+          <Box sx={{ width: "40%", padding: 2, marginTop: "30px" }}>
             <img
               src={selectedProduct?.image}
               alt={selectedProduct?.title}
@@ -239,9 +258,17 @@ function Products({
             </Typography>
 
             {/* ✅ Description */}
-            <Typography variant="body2" sx={{ mt: 2, color: "gray" }}>
-              {selectedProduct?.description}
+            <Typography variant="body1" sx={{ marginTop: "10px" }}>
+              About this product:
             </Typography>
+            <Typography variant="body2" sx={{ mt: 2, color: "gray" }}>
+              {selectedProduct?.description
+                ? selectedProduct.description.length > 300
+                  ? `${selectedProduct.description.slice(0, 300)}...`
+                  : selectedProduct.description
+                : "No description available"}
+            </Typography>
+
 
             {/* ✅ Add to Cart Button */}
             <Button
@@ -255,12 +282,15 @@ function Products({
           </Box>
         </Box>
       </Modal>
+
+
+
       {/* ✅ Snackbar Component */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }} // ✅ Positioned at Top-Right
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
           Product added to cart!
@@ -272,8 +302,6 @@ function Products({
 
 const mapStateToProps = (state) => ({
   products: state?.Post || {},
-  addToCart: state?.cart || {},
-  removeFromCart: state?.cart || {},
 });
 
 const mapDispatchToProps = (dispatch) => ({

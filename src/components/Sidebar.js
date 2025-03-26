@@ -13,8 +13,8 @@ function Sidebar({ onCategorySelect }) {
       </div>
       <List>
         {topics.map((category, index) => (
-          <ListItem button key={index} onClick={() => onCategorySelect(category)}>
-            <ListItemText primary={category} />
+          <ListItem button key={index} onClick={() => onCategorySelect(category)} sx={{cursor:"pointer"}}>
+            <ListItemText primary={category}  />
           </ListItem>
         ))}
       </List>
