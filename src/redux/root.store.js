@@ -11,7 +11,7 @@ const persistConfig = {
     key: "root", // Meaningful key instead of "v1"
     version: 1,
     storage,
-    whitelist: ["user"], // Only persist 'user' slice
+    whitelist: ["user", "cart"], // Only persist 'user' slice
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

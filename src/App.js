@@ -1,28 +1,56 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { Box } from "@mui/material";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Products from "./components/Products";
+import CartItems from "./components/CartItems";
 
-function App() {
+function Layout() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All"); // ✅ Default to "All"
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const location = useLocation(); // ✅ Get current route
 
   return (
-    <Router>
-      <Header onSearch={setSearchQuery} /> {/* ✅ Pass search function */}
+    <>
+      <Header onSearch={setSearchQuery} />
       <Box display="flex">
-        <Sidebar onCategorySelect={(category) => setSelectedCategory(category || "All")} />
+        {/* ✅ Hide Sidebar when on "/cart" */}
+        {location.pathname !== "/cart" && (
+          <Sidebar
+            onCategorySelect={(category) =>
+              setSelectedCategory(category || "All")
+            }
+          />
+        )}
         <Box flexGrow={1} p={2}>
           <Routes>
             <Route
               path="/products"
-              element={<Products searchQuery={searchQuery} selectedCategory={selectedCategory} />}
+              element={
+                <Products
+                  searchQuery={searchQuery}
+                  selectedCategory={selectedCategory}
+                />
+              }
             />
+            <Route path="/cart" element={<CartItems />} />
           </Routes>
         </Box>
       </Box>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Layout />
     </Router>
   );
 }
