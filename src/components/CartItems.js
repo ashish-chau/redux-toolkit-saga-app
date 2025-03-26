@@ -1,35 +1,52 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Box, Typography, Button, IconButton, Grid, Card, CardMedia, CardContent } from "@mui/material";
+import { connect } from "react-redux";
+import {
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+} from "@mui/material";
 import { Remove, Add, Delete } from "@mui/icons-material";
 import { addToCart, removeFromCart } from "../redux/utils/getBasicSlices";
 
-function CartItems() {
-  const cartItems = useSelector((state) => state.cart.cartItems);
-  const dispatch = useDispatch();
-
+function CartItems({ cartItems, addToCart, removeFromCart }) {
   const handleIncrease = (item) => {
-    dispatch(addToCart(item));
+    addToCart(item);
   };
 
   const handleDecrease = (item) => {
     if (item.quantity > 1) {
-      dispatch(removeFromCart(item));
+      removeFromCart(item);
     }
   };
 
   const handleRemove = (item) => {
-    dispatch(removeFromCart({ ...item, quantity: 0 })); // Remove item completely
+    console.log("Removing item", item);
+    removeFromCart({ id: item.id }); // ✅ Only send the ID
   };
 
-  const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const totalPrice = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
   const discount = 12; // Example discount
   const subtotal = totalPrice - discount;
 
   return (
     <Box sx={{ maxWidth: "1200px", margin: "auto", padding: "20px" }}>
       {/* Header Section with Continue Shopping Button */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Typography variant="h5" sx={{ fontWeight: "bold" }}>
           Shopping Cart ({cartItems.length} items)
         </Typography>
@@ -44,12 +61,17 @@ function CartItems() {
         <Grid item xs={12} md={8}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {cartItems.map((item) => (
-              <Card key={item.id} sx={{ display: "flex", alignItems: "center", padding: 2 }}>
+            <Card key={`${item.id}-${item.quantity}`} sx={{ display: "flex", alignItems: "center", padding: 2 }}>
                 <CardMedia
                   component="img"
                   image={item.image}
                   alt={item.title}
-                  sx={{ width: "100px", height: "100px", borderRadius: "8px", objectFit: "cover" }}
+                  sx={{
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "8px",
+                    objectFit: "cover",
+                  }}
                 />
                 <CardContent sx={{ flex: 1, ml: 2 }}>
                   <Typography variant="body1" sx={{ fontWeight: "bold" }}>
@@ -73,12 +95,12 @@ function CartItems() {
                     <IconButton onClick={() => handleIncrease(item)}>
                       <Add />
                     </IconButton>
-                    <IconButton onClick={() => handleRemove(item)} sx={{ ml: 2 }}>
+                    <IconButton
+                      onClick={() => handleRemove(item)}
+                      sx={{ ml: 2 }}
+                    >
                       <Delete />
                     </IconButton>
-                    <Typography variant="body2" sx={{ cursor: "pointer", color: "red", ml: 1 }}>
-                      remove
-                    </Typography>
                   </Box>
                 </CardContent>
               </Card>
@@ -121,4 +143,16 @@ function CartItems() {
   );
 }
 
-export default CartItems;
+
+const mapStateToProps = (state) => ({
+  cartItems: state.cart.cartItems,
+});
+
+// Map Redux actions to component props
+const mapDispatchToProps = (dispatch) => ({
+  addToCart: (item) => dispatch(addToCart(item)),
+  removeFromCart: (item) => dispatch(removeFromCart(item)),
+});
+
+// Connect component to Redux store
+export default connect(mapStateToProps, mapDispatchToProps)(CartItems);

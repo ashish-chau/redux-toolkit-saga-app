@@ -63,7 +63,14 @@ const cartSlice = createSlice({
         }
       },
       removeFromCart: (state, action) => {
-        state.cartItems = state.cartItems.filter((item) => item.id !== action.payload);
+        const itemIndex = state.cartItems.findIndex((i) => i.id === action.payload.id);
+        if (itemIndex !== -1) {
+          if (action.payload.quantity > 0) {
+            state.cartItems[itemIndex].quantity -= 1; // Reduce quantity
+          } else {
+            state.cartItems.splice(itemIndex, 1); // Remove item completely if quantity is 0
+          }
+        }
       },
     },
   });
