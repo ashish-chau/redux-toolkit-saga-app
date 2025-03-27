@@ -1,6 +1,6 @@
-import {put,call, takeLatest,} from 'redux-saga/effects';
+import {put,call, takeLatest,delay } from 'redux-saga/effects';
 import { types } from '../action/type';
-import { requestPost,successPost,failurePost } from '../reducers/postRerducer.js';
+import { requestPost,successPost,failurePost, requestLogin, successLogin, failureLogin } from '../reducers/postRerducer.js';
 import { getPost } from '../services/api.js';
 
 // Worker Saga: Fetch Student Enquiry
@@ -16,6 +16,50 @@ function* fetchPost() {
     }
   }
 
+  // ✅ Fake Login Worker Saga
+function* loginUser(action) {
+    try {
+      yield put((requestLogin));
+      yield delay(1000); // Simulate network delay
+  
+      const { email, password } = action.payload;
+  
+      // ✅ Hardcoded Demo User
+      const demoUser = {
+        email: "demo@example.com",
+        password: "password123",
+        id: 1,
+        name: "Demo User",
+      };
+
+      console.log("demoUser", demoUser);
+  
+      // ✅ Validate Credentials
+      if (email === demoUser.email && password === demoUser.password) {
+        yield put(successLogin(demoUser));
+        console.log(" success full login demoUser", demoUser);
+  
+      } else {
+        yield put(failureLogin({ data: "Invalid credentials", status: 401 }));
+      }
+    } catch (error) {
+      yield put(failureLogin({ data: "Something went wrong", status: 500 }));
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
   export function* watcheReduxApplication() {
     yield takeLatest(types.Post, fetchPost);
+    yield takeLatest(types.Login, loginUser);
   }

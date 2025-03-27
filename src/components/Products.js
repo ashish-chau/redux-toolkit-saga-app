@@ -2,6 +2,8 @@ import { connect } from "react-redux";
 import { getPost } from "../redux/action/action";
 import { addToCart, removeFromCart } from "../redux/utils/getBasicSlices";
 import { useEffect, useState } from "react";
+import "../../src/styles/products.css";
+
 import {
   Container,
   Typography,
@@ -12,7 +14,7 @@ import {
   Pagination,
   Snackbar,
   Alert,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -164,13 +166,82 @@ function Products({
                   {product.title}
                 </h3>
 
-                <p style={{ fontSize: "14px", color: "#555", margin: "5px 0" }}>
-                  Price: <b>${product.price}</b>
-                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px", // Spacing between price and discount
+                    margin: "5px 0",
+                  }}
+                >
+                  {/* Price Section */}
+                  <p
+                    style={{
+                      fontSize: "14px",
+                      color: "#555",
+                      fontWeight: "bold",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "rgb(34 197 94)",
+                        fontWeight: "600",
+                        fontSize: "1.75rem",
+                      }}
+                    >
+                      $
+                    </span>
+                    <span
+                      style={{
+                        color: "black",
+                        fontWeight: "600",
+                        fontSize: "1.75rem",
+                        marginLeft: "2px",
+                      }}
+                    >
+                      {product.price}
+                    </span>
+                  </p>
 
-                <p style={{ fontSize: "14px", color: "#555", margin: "5px 0" }}>
-                  Discount: <b>{product.discount}%</b>
-                </p>
+                  {/* Discount Section */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        borderRadius: "50%",
+                        border: "1px solid red",
+                        background: "red",
+                        color: "white",
+                        fontSize: "11px",
+                        width: "24px", // Adjust for a better circular look
+                        height: "24px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {product.discount}%
+                    </span>
+                    <span
+                      style={{
+                        color: "black",
+                        fontWeight: "500",
+                        fontSize: ".875rem",
+                      }}
+                    >
+                      off
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -269,7 +340,6 @@ function Products({
                 : "No description available"}
             </Typography>
 
-
             {/* ✅ Add to Cart Button */}
             <Button
               variant="contained"
@@ -282,8 +352,6 @@ function Products({
           </Box>
         </Box>
       </Modal>
-
-
 
       {/* ✅ Snackbar Component */}
       <Snackbar

@@ -1,3 +1,19 @@
 export const types = {
-    Post : "Post"
+Post : "Post",
+Login : "Login"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

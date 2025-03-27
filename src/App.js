@@ -10,6 +10,8 @@ import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Products from "./components/Products";
 import CartItems from "./components/CartItems";
+import Login from "./components/Login";
+import CheckoutPage from "./components/CheckoutPage";
 
 function Layout() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,6 +42,8 @@ function Layout() {
               }
             />
             <Route path="/cart" element={<CartItems />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/checkout" element={<CheckoutPage/>} />
           </Routes>
         </Box>
       </Box>

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
+
 import {
   Box,
   Typography,
@@ -12,8 +13,12 @@ import {
 } from "@mui/material";
 import { Remove, Add, Delete } from "@mui/icons-material";
 import { addToCart, removeFromCart } from "../redux/utils/getBasicSlices";
+import { Link } from "react-router-dom";
+import Login from "./Login";
 
 function CartItems({ cartItems, addToCart, removeFromCart }) {
+  const [openLogin, setOpenLogin] = useState(false);
+
   const handleIncrease = (item) => {
     addToCart(item);
   };
@@ -70,7 +75,7 @@ function CartItems({ cartItems, addToCart, removeFromCart }) {
           <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
             Looks like you haven’t added anything to your cart yet.
           </Typography>
-          <Button variant="contained" href="/products" >
+          <Button variant="contained" href="/products">
             Shop Now
           </Button>
         </Box>
@@ -156,9 +161,17 @@ function CartItems({ cartItems, addToCart, removeFromCart }) {
                 <Typography variant="h6" sx={{ mt: 1, fontWeight: "bold" }}>
                   Subtotal: ${subtotal}
                 </Typography>
-                <Button variant="contained" sx={{ mt: 2, width: "100%" }}>
+                <Button
+                  variant="contained"
+                  sx={{ mt: 2, width: "100%" }}
+                  onClick={() => setOpenLogin(true)}
+                >
                   Proceed to Pay
                 </Button>
+                <Login
+                  open={openLogin}
+                  handleClose={() => setOpenLogin(false)}
+                />
               </Box>
             </Grid>
           )}
