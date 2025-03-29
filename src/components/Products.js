@@ -3,6 +3,7 @@ import { getPost } from "../redux/action/action";
 import { addToCart, removeFromCart } from "../redux/utils/getBasicSlices";
 import { useEffect, useState } from "react";
 import "../../src/styles/products.css";
+import Carousel from "./Carousel";
 
 import {
   Container,
@@ -102,9 +103,8 @@ function Products({
 
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom align="center">
-        Product List
-      </Typography>
+      <Carousel /> {/* ✅ Carousel Component */}
+     
 
       {/* ✅ Loader Handling */}
       {loading ? (

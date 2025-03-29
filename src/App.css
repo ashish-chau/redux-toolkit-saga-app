@@ -1,0 +1,13 @@
+/* Slick Carousel Default Styles */
+.slick-prev, .slick-next {
+  color: black !important;
+  z-index: 10;
+}
+
+.slick-dots li button:before {
+  color: gray !important;
+}
+
+.slick-dots li.slick-active button:before {
+  color: black !important;
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // 🚀 Import navigation hook
+import { useNavigate } from "react-router-dom";
 import {
   Modal,
   Box,
@@ -8,17 +8,18 @@ import {
   Button,
   IconButton,
   InputAdornment,
+  CircularProgress, // Added for loading icon
 } from "@mui/material";
 import { Close, Visibility, VisibilityOff, Email } from "@mui/icons-material";
-
 import RegisterPage from "./RegisterPage";
 import { connect } from "react-redux";
 import { postLogin } from "../redux/action/action";
 
 const Login = ({ open, handleClose, login, postLogin }) => {
-  const navigate = useNavigate(); // 🚀 React Router navigation hook
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
+  const [loading, setLoading] = useState(false); // New loading state
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -29,17 +30,14 @@ const Login = ({ open, handleClose, login, postLogin }) => {
     setOpenRegister(true);
   };
 
-  // Handle input change
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  // Handle login
   const handleLogin = () => {
     postLogin(credentials);
   };
 
-  // Handle demo login
   const handleDemoLogin = () => {
     const demoCredentials = {
       email: "demo@example.com",
@@ -49,17 +47,44 @@ const Login = ({ open, handleClose, login, postLogin }) => {
     postLogin(demoCredentials);
   };
 
-  // ✅ Effect to handle success and navigate to checkout
+  // Effect to handle success, show loading, and navigate
   useEffect(() => {
     if (login.isSuccess) {
-      alert("Login successful!"); // ✅ Show success message
-      handleClose(); // ✅ Close the login modal
-      navigate("/checkout"); // ✅ Redirect to the checkout page
+      handleClose(); // Close the login modal
+      setLoading(true); // Show loading state
+      setTimeout(() => {
+        setLoading(false); // Hide loading after navigation
+        navigate("/checkout"); // Redirect to checkout page
+      }, 3000); // 1-second delay
     }
   }, [login.isSuccess, navigate, handleClose]);
 
   return (
     <>
+      {/* Loading Overlay */}
+      {loading && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            bgcolor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 2000, // Ensure it’s above everything
+          }}
+        >
+          <CircularProgress color="primary" />
+          <Typography variant="h6" sx={{ mt: 2, color: "white" }}>
+            Loading...
+          </Typography>
+        </Box>
+      )}
+
       {/* Login Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box
@@ -75,7 +100,6 @@ const Login = ({ open, handleClose, login, postLogin }) => {
             width: "350px",
           }}
         >
-          {/* Close Button */}
           <IconButton
             onClick={handleClose}
             sx={{ position: "absolute", top: 10, right: 10 }}
@@ -83,12 +107,13 @@ const Login = ({ open, handleClose, login, postLogin }) => {
             <Close />
           </IconButton>
 
-          {/* Login Heading */}
-          <Typography variant="h6" sx={{ textAlign: "center", fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ textAlign: "center", fontWeight: "bold", mb: 2 }}
+          >
             Login
           </Typography>
 
-          {/* Email Input */}
           <TextField
             fullWidth
             label="Email"
@@ -107,7 +132,6 @@ const Login = ({ open, handleClose, login, postLogin }) => {
             }}
           />
 
-          {/* Password Input */}
           <TextField
             fullWidth
             label="Password"
@@ -127,28 +151,42 @@ const Login = ({ open, handleClose, login, postLogin }) => {
             }}
           />
 
-          {/* Login Button */}
-          <Button fullWidth variant="contained" sx={{ mt: 2 }} onClick={handleLogin}>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mt: 2 }}
+            onClick={handleLogin}
+          >
             Login
           </Button>
 
-          {/* Register Link */}
           <Typography variant="body2" sx={{ textAlign: "center", mt: 2 }}>
             Don't have an account?{" "}
-            <span style={{ color: "blue", cursor: "pointer" }} onClick={handleOpenRegister}>
+            <span
+              style={{ color: "blue", cursor: "pointer" }}
+              onClick={handleOpenRegister}
+            >
               Register
             </span>
           </Typography>
 
-          {/* Demo Account Button */}
-          <Button fullWidth variant="contained" color="error" sx={{ mt: 1 }} onClick={handleDemoLogin}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="error"
+            sx={{ mt: 1 }}
+            onClick={handleDemoLogin}
+          >
             Use Demo Account
           </Button>
         </Box>
       </Modal>
 
       {/* Register Modal */}
-      <RegisterPage open={openRegister} handleClose={() => setOpenRegister(false)} />
+      <RegisterPage
+        open={openRegister}
+        handleClose={() => setOpenRegister(false)}
+      />
     </>
   );
 };

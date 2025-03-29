@@ -1,21 +1,34 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Box, Typography, TextField, Button, Select, MenuItem, Grid, Card, CardContent } from "@mui/material";
-
+import { useNavigate } from "react-router-dom";
+import { Box , Typography, TextField, Button, Select, MenuItem, Grid, Card, CardContent } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 const CheckoutPage = ({ cartItems, totalAmount }) => {
+     const navigate = useNavigate(); // Uncomment if you want to use navigation
+    console.log("cartItems", cartItems);
   return (
     <Grid container spacing={2} sx={{ p: 4 }}>
       {/* Cart Summary */}
       <Grid item xs={12} md={6}>
+      <Button 
+      variant="text" 
+      color="primary" 
+      startIcon={<ArrowBackIcon />} 
+       onClick={() => navigate("/payment-failed")} // Go back to previous page
+      sx={{ mb: 2 }}
+    >
+      Back
+    </Button>
         <Card sx={{ p: 3 }}>
           <Typography variant="h6">Pay</Typography>
           <Typography variant="h4" fontWeight="bold">${totalAmount.toFixed(2)}</Typography>
           {cartItems.map((item, index) => (
             <Box key={index} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mt: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <img src={item.image} alt={item.name} style={{ width: 50, height: 50, marginRight: 10 }} />
+                <img src={item.image} alt={item.name} style={{ width: 80, height: 80, marginRight: 10 }} />
                 <Box>
                   <Typography>{item.name}</Typography>
+                  <Typography>{item.title}</Typography>
                   <Typography variant="body2">Qty {item.quantity}</Typography>
                 </Box>
               </Box>
@@ -57,9 +70,15 @@ const CheckoutPage = ({ cartItems, totalAmount }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  cartItems: state.cart.cartItems,
-  totalAmount: state.cart.cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
-});
-
+const mapStateToProps = (state) => {
+    console.log("Redux State:", state);  // ✅ Log entire Redux state
+    console.log("Cart Items:", state.cart.cartItems);  // ✅ Log only cart items
+    console.log("Total Amount:", state.cart.cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)); // ✅ Log total
+  
+    return {
+      cartItems: state.cart.cartItems,
+      totalAmount: state.cart.cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
+    };
+  };
+  
 export default connect(mapStateToProps)(CheckoutPage);
