@@ -52,7 +52,7 @@ function Header({ onSearch }) {
                     </IconButton>
                     </Link>
 
-                    <IconButton>
+                    <IconButton >
                         <AccountCircle sx={{ color: "#333" }} />
                     </IconButton>
                 </Box>
