@@ -7,3 +7,7 @@ export const getPost = () => {
 export const postLogin = (payload) => {
     return {type: types.Login, payload:payload};
   };
+
+export const userRegister = (payload) => {
+    return {type: types.UserRegister, payload:payload};
+  }

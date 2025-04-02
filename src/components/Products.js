@@ -49,6 +49,8 @@ function Products({
     }
   }, [products]);
 
+  console.warn("Products:", products); // Debugging line
+
   useEffect(() => {
     if (products?.data?.products) {
       let filtered = products.data.products;

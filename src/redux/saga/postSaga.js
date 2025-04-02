@@ -1,7 +1,7 @@
 import {put,call, takeLatest,delay } from 'redux-saga/effects';
 import { types } from '../action/type';
-import { requestPost,successPost,failurePost, requestLogin, successLogin, failureLogin } from '../reducers/postRerducer.js';
-import { getPost } from '../services/api.js';
+import { requestPost,successPost,failurePost, requestLogin, successLogin, failureLogin, requestUserRegister, successUserRegister, failureUserRegister } from '../reducers/postRerducer.js';
+import { getPost, PostUserRegister } from '../services/api.js';
 
 // Worker Saga: Fetch Student Enquiry
 
@@ -47,6 +47,17 @@ function* loginUser(action) {
     }
   }
 
+  function* userRegister(action) {
+    try {
+      yield put(requestUserRegister());
+      const post = yield call(PostUserRegister, action.payload);
+      console.log("user Register", post);
+      yield put(successUserRegister(post));
+    } catch (error) {
+      yield put(failureUserRegister(error));
+    }
+  }
+
 
 
 
@@ -62,4 +73,5 @@ function* loginUser(action) {
   export function* watcheReduxApplication() {
     yield takeLatest(types.Post, fetchPost);
     yield takeLatest(types.Login, loginUser);
+    yield takeLatest(types.UserRegister, userRegister);
   }

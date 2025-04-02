@@ -8,7 +8,7 @@ export const api = axios.create({
 
 export const getPost = async () => {
   try {
-    const response = await api.get("/products?limit=150"); // ✅ Correct API call
+    const response = await api.get("api/products?limit=150"); // ✅ Correct API call
     console.log("API Response:", response);
     return response.data;
   } catch (error) {
@@ -16,3 +16,14 @@ export const getPost = async () => {
     return error;
   }
 };
+
+export const PostUserRegister = async (payload) => {
+  try {
+    const response = await api.post("api/userRegister", payload); // ✅ Correct API call
+    console.log(" User Register API Response:", response);
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error);
+    return error;
+  }
+}
